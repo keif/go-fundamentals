@@ -15,6 +15,8 @@ func main() {
 	if err != nil {
 		fmt.Printf("Error getting account balance: %v\n", err)
 		fmt.Println("----")
+		return
+		//panic("Can't continue, sorry.")
 	}
 
 	fmt.Println("Welcome to Go Bank!")
