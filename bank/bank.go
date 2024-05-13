@@ -22,19 +22,10 @@ func main() {
 	fmt.Println("Welcome to Go Bank!")
 
 	for {
-		fmt.Println("What do you want to do?")
-		fmt.Println("1. Check balance")
-		fmt.Println("2. Deposit money")
-		fmt.Println("3. Withdraw money")
-		fmt.Println("4. Exit")
+		presentOptions()
 
 		fmt.Print("Your choice: ")
 		fmt.Scan(&choice)
-
-		//checkBalance := choice == 1
-		//depositMoney := choice == 2
-		//withdrawMoney := choice == 3
-		//exitApp := choice == 4
 
 		switch choice {
 		case 1:
