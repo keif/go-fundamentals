@@ -19,6 +19,9 @@ func main() {
 	userBirthdate := getUserData("Please enter your birthdate (MM/DD/YYYY): ")
 
 	var appUser user
+	// we don't need the keys, but it does make mapping more clear
+	// appUser = user{} // null value for the struct
+	// appUser = user{ ...some but not all data } // the non-included keys will be instantiated with the null values
 	appUser = user{
 		firstName: userFirstName,
 		lastName:  userLastName,
@@ -28,7 +31,7 @@ func main() {
 
 	// ... do something awesome with that gathered data!
 
-	outputUserDetails(firstName, lastName, birthdate)
+	outputUserDetails(appUser)
 }
 
 func getUserData(promptText string) string {
@@ -38,6 +41,6 @@ func getUserData(promptText string) string {
 	return value
 }
 
-func outputUserDetails(firstName, lastName, birthdate string) {
-	fmt.Println(firstName, lastName, birthdate)
+func outputUserDetails(u user) {
+	fmt.Println(u.firstName, u.lastName, u.birthdate, u.createdAt)
 }
