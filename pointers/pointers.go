@@ -7,8 +7,12 @@ func main() {
 
 	// declaring this is a pointer
 	var agePointer *int
+	// & "gets" the pointer
 	agePointer = &age
 
+	// * gets the value of the pointer
+	fmt.Println("AgePointer:", agePointer)
+	fmt.Println("AgePointer Value:", *agePointer)
 	fmt.Println("Age:", age)
 
 	adultYears := getAdultYears(age)
