@@ -15,7 +15,7 @@ func main() {
 		return
 	}
 
-	fmt.Println(userNote)
+	userNote.Display()
 }
 
 func getNoteData() (string, string) {

@@ -12,6 +12,10 @@ type Note struct {
 	created time.Time
 }
 
+func (note Note) Display() {
+	fmt.Printf("Your note titlted \"%v\" has the following content:\n\n%v\n\n", note.title, note.content)
+}
+
 func New(title string, content string) (Note, error) {
 	if title == "" || content == "" {
 		return Note{}, errors.New("No user input")
@@ -22,8 +26,4 @@ func New(title string, content string) (Note, error) {
 		content: content,
 		created: time.Now(),
 	}, nil
-}
-
-func (note Note) Display() {
-	fmt.Printf("Your note titlted %v has the following content:\n\n%v\n\n", note)
 }
