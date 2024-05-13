@@ -15,11 +15,15 @@ func main() {
 	fmt.Println("AgePointer Value:", *agePointer)
 	fmt.Println("Age:", age)
 
-	adultYears := getAdultYears(age)
+	// adultYears := getAdultYears(*age) // is equivalent, but we already created a pointer so we're using it
+	adultYears := getAdultYears(agePointer)
 	fmt.Println(adultYears)
 }
 
 // this age is a copied value, in a different address in memory
-func getAdultYears(age int) int {
-	return age - 18
+// we're getting the address
+// age is not being copied - but it's not really worth it, just an example on "how it works"
+func getAdultYears(age *int) int {
+	// getting the value
+	return *age - 18
 }
