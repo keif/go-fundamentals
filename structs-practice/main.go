@@ -70,16 +70,34 @@ func main() {
 
 // this will accept any type of value - interface{}
 func printSomething(value interface{}) {
-	switch value := value.(type) {
-	case bool:
-		fmt.Println("Bool: ", value)
-	case float64:
-		fmt.Println("Float:", value)
-	case int:
-		fmt.Println("Int: ", value)
-	case string:
-		fmt.Println("String: ", value)
+	intVal, ok := value.(int)
+	//if !ok {
+	//	fmt.Println("Error: value is not int")
+	//}
+	if ok {
+		fmt.Println("Integer: ", intVal)
+		return
 	}
+	floatVal, ok := value.(float64)
+	if ok {
+		fmt.Println("Float: ", floatVal)
+		return
+	}
+	stringVal, ok := value.(string)
+	if ok {
+		fmt.Println("String: ", stringVal)
+		return
+	}
+	//switch value := value.(type) {
+	//case bool:
+	//	fmt.Println("Bool: ", value)
+	//case float64:
+	//	fmt.Println("Float:", value)
+	//case int:
+	//	fmt.Println("Int: ", value)
+	//case string:
+	//	fmt.Println("String: ", value)
+	//}
 }
 
 func outputData(data outputtable) error {
