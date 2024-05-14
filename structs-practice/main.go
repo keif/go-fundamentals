@@ -9,6 +9,14 @@ import (
 	"strings"
 )
 
+// common convention:
+// when your interface has one method, the name is the method + "er" - ergo, saver
+// you don't have to associate the interface explicity
+// it checks that what's passed in has a Save method with an error return type
+type saver interface {
+	Save() error
+}
+
 func main() {
 	title, content := getNoteData()
 	todoText := getUserInput("Todo text: ")
@@ -27,7 +35,7 @@ func main() {
 	}
 
 	todo.Display()
-	err = todo.Save()
+	err = saveData(todo)
 	if err != nil {
 		fmt.Println("Saving the todo failed:", err)
 		return
@@ -36,13 +44,23 @@ func main() {
 	fmt.Println("Saved todo:", title)
 
 	userNote.Display()
-	err = userNote.Save()
+	err = saveData(userNote)
 	if err != nil {
 		fmt.Println("Saving the note failed:", err)
 		return
 	}
 
 	fmt.Println("Saved note:", title)
+}
+
+func saveData(data saver) error {
+	err := data.Save()
+	if err != nil {
+		fmt.Println("Saving the data failed:", err)
+		return err
+	}
+	fmt.Println("Saved data:", data)
+	return nil
 }
 
 func getNoteData() (string, string) {
