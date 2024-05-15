@@ -35,4 +35,12 @@ func main() {
 	courseRatings["python"] = 3.2 // still good, under the limit of the make function
 
 	fmt.Println(courseRatings)
+
+	for index, userName := range userNames {
+		fmt.Println(index, userName, userNames[index])
+	}
+
+	for index, courseRating := range courseRatings {
+		fmt.Println(index, courseRating, courseRatings[index])
+	}
 }
