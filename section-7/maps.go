@@ -14,6 +14,12 @@ func main() {
 		"amazon web services": "https://www.aws.com",
 	}
 
-	fmt.Println(websites)
+	fmt.Println("websites: ", websites)
+	// the key won't error if mispelled, it just won't print out anything.
+	fmt.Println("ex: ", websites["amazon web services"])
+	websites["LinkedIn"] = "https://www.linkedin.com"
+	fmt.Println("websites: ", websites)
 
+	delete(websites, "google")
+	fmt.Println("websites: ", websites)
 }
