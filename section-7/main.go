@@ -2,6 +2,12 @@ package main
 
 import "fmt"
 
+type floatMap map[string]float64
+
+func (f floatMap) output() {
+	fmt.Println(f)
+}
+
 func main() {
 	//userNames := []string{} // creates empty array
 	//userNames[0] = "Julie" // this will error, 0 doesn't exist
@@ -22,7 +28,8 @@ func main() {
 	//courseRatings := map[string]float64{}
 	// same problem as above
 	//courseRatings := make(map[string]float64)
-	courseRatings := make(map[string]float64, 3) // preallocate memory for three
+	//courseRatings := make(map[string]float64, 3) // preallocate memory for three
+	courseRatings := make(floatMap) // type alias
 	courseRatings["go"] = 6.9
 	courseRatings["java"] = 4.2
 	courseRatings["python"] = 3.2 // still good, under the limit of the make function
