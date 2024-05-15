@@ -3,7 +3,7 @@ package main
 import "fmt"
 
 func main() {
-	prices := []float64{10.99, 8.99} // dynamic array! since we didn't declare a length
+	prices := []float64{10.99, 18.99} // dynamic array! since we didn't declare a length
 	fmt.Println(prices[0:1])
 	prices[1] = 9.99
 	//prices[2] = 11.99 // out of range of the slice, do not add this way
@@ -16,6 +16,12 @@ func main() {
 	prices = append(prices, 5.99)
 	prices = prices[1:]
 	fmt.Println(prices)
+
+	discountPrices := []float64{5.99, 2.99, 1.99}
+	// ... spreads
+	prices = append(prices, discountPrices...)
+	fmt.Println(prices)
+
 }
 
 //func main() {
