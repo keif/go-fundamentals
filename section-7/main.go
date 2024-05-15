@@ -17,4 +17,15 @@ func main() {
 	userNames[0] = "Julie"
 
 	fmt.Println(userNames)
+
+	// same problem as before, each addition creates a new map in memory
+	//courseRatings := map[string]float64{}
+	// same problem as above
+	//courseRatings := make(map[string]float64)
+	courseRatings := make(map[string]float64, 3) // preallocate memory for three
+	courseRatings["go"] = 6.9
+	courseRatings["java"] = 4.2
+	courseRatings["python"] = 3.2 // still good, under the limit of the make function
+
+	fmt.Println(courseRatings)
 }
