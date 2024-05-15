@@ -24,8 +24,18 @@ func main() {
 	// negatives are not valid, and not out of bounds
 	// equivalent to the above, since 4 is the length of the array
 	//featuredPrices := prices[1:4]
+	featuredPrices[0] = 199.99 // as a slice is a window into the array
 	fmt.Println(featuredPrices)
 
 	highlightedPrices := featuredPrices[:1]
 	fmt.Println(highlightedPrices)
+	fmt.Println(prices)
+	fmt.Println(len(featuredPrices), cap(featuredPrices))
+	fmt.Println(len(highlightedPrices), cap(highlightedPrices)) // 1, 3 because the original slice has more capacity.
+	// you can always select more at the end, not at the start - you can't go back, so it only counts towards the original of the array
+
+	highlightedPrices = highlightedPrices[:3]
+	fmt.Println(highlightedPrices)
+	fmt.Println(len(highlightedPrices), cap(highlightedPrices)) // 3, 3 because we sliced up to the length - go knows there was more capacity to the right
+
 }
