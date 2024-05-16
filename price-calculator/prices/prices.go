@@ -23,8 +23,11 @@ func NewTaxIncludedPriceJob(iom iomanager.IOManager, taxRate float64) *TaxInclud
 	}
 }
 
-func (t *TaxIncludedPriceJob) Process() {
-	t.LoadData()
+func (t *TaxIncludedPriceJob) Process() error {
+	err := t.LoadData()
+	if err != nil {
+		return err
+	}
 
 	result := make(map[string]string)
 
@@ -34,23 +37,22 @@ func (t *TaxIncludedPriceJob) Process() {
 	}
 
 	t.TaxIncludedPrices = result
-	t.IOManager.WriteResult(t)
+	return t.IOManager.WriteResult(t)
 }
 
 // must be a pointer so we update the values, not copy them
-func (t *TaxIncludedPriceJob) LoadData() {
+func (t *TaxIncludedPriceJob) LoadData() error {
 	lines, err := t.IOManager.ReadLines()
 	if err != nil {
-		fmt.Println(err)
-		return
+		return err
 	}
 
 	prices, err := conversion.StringsToFloats(lines)
 	if err != nil {
-		fmt.Println("There was an error converting the prices to float.")
-		fmt.Println(err)
-		return
+		return err
 	}
 
 	t.InputPrices = prices
+
+	return nil
 }

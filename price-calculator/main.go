@@ -1,7 +1,6 @@
 package main
 
 import (
-	"example.com/price-calculator/cmdmanager"
 	"example.com/price-calculator/filemanager"
 	"example.com/price-calculator/prices"
 	"fmt"
@@ -12,11 +11,15 @@ func main() {
 
 	for _, taxRate := range taxRates {
 		fm := filemanager.New("prices.txt", fmt.Sprintf("result_%.0f.json", taxRate*100))
-		cdm := cmdmanager.New()
+		//cdm := cmdmanager.New()
 		priceJob := prices.NewTaxIncludedPriceJob(fm, taxRate)
-		priceJob.Process()
+		err := priceJob.Process()
+		if err != nil {
+			fmt.Println("Could not process price job")
+			fmt.Println(err)
+		}
 
-		priceJobcdm := prices.NewTaxIncludedPriceJob(cdm, taxRate)
-		priceJobcdm.Process()
+		//priceJobcdm := prices.NewTaxIncludedPriceJob(cdm, taxRate)
+		//priceJobcdm.Process()
 	}
 }
