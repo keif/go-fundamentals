@@ -7,6 +7,7 @@ import (
 )
 
 type TaxIncludedPriceJob struct {
+	IOManager         filemanager.FileManager
 	TaxRate           float64           `json:"tax_rate"`
 	InputPrices       []float64         `json:"input_prices"`
 	TaxIncludedPrices map[string]string `json:"tax_included_prices"`
@@ -14,8 +15,9 @@ type TaxIncludedPriceJob struct {
 
 // constructor
 // return pointer so we only share it once in memory
-func NewTaxIncludedPriceJob(taxRate float64) *TaxIncludedPriceJob {
+func NewTaxIncludedPriceJob(fm filemanager.FileManager, taxRate float64) *TaxIncludedPriceJob {
 	return &TaxIncludedPriceJob{
+		IOManager:   fm,
 		InputPrices: []float64{10, 20, 30},
 		TaxRate:     taxRate,
 	}
@@ -32,16 +34,12 @@ func (t *TaxIncludedPriceJob) Process() {
 	}
 
 	t.TaxIncludedPrices = result
-
-	err := filemanager.WriteJSON(fmt.Sprintf("result_%.0f.json", t.TaxRate*100), t)
-	if err != nil {
-		panic(err)
-	}
+	t.IOManager.WriteResult(t)
 }
 
 // must be a pointer so we update the values, not copy them
 func (t *TaxIncludedPriceJob) LoadData() {
-	lines, err := filemanager.ReadLines("prices.txt")
+	lines, err := t.IOManager.ReadLines()
 	if err != nil {
 		fmt.Println(err)
 		return
