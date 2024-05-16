@@ -23,10 +23,11 @@ func NewTaxIncludedPriceJob(iom iomanager.IOManager, taxRate float64) *TaxInclud
 	}
 }
 
-func (t *TaxIncludedPriceJob) Process() error {
+// error return type removed as it's a go routine
+func (t *TaxIncludedPriceJob) Process(doneChan chan bool) {
 	err := t.LoadData()
 	if err != nil {
-		return err
+		//return err
 	}
 
 	result := make(map[string]string)
@@ -37,7 +38,8 @@ func (t *TaxIncludedPriceJob) Process() error {
 	}
 
 	t.TaxIncludedPrices = result
-	return t.IOManager.WriteResult(t)
+	t.IOManager.WriteResult(t)
+	doneChan <- true
 }
 
 // must be a pointer so we update the values, not copy them

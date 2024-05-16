@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"time"
 )
 
 type FileManager struct {
@@ -18,6 +19,8 @@ func (fm FileManager) ReadLines() ([]string, error) {
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("Could not open file: %s", err))
 	}
+
+	time.Sleep(3 * time.Second)
 
 	scanner := bufio.NewScanner(file)
 	var lines []string
