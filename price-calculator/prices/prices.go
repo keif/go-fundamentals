@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strconv"
 )
 
 type TaxIncludedPriceJob struct {
@@ -21,16 +22,21 @@ func NewTaxIncludedPriceJob(taxRate float64) *TaxIncludedPriceJob {
 	}
 }
 
-func (t TaxIncludedPriceJob) Process() {
-	result := make(map[string]float64)
+func (t *TaxIncludedPriceJob) Process() {
+	t.LoadData()
+
+	result := make(map[string]string)
+
 	for _, price := range t.InputPrices {
-		result[fmt.Sprintf("%.2f", price)] = price * (1 + t.TaxRate)
+		taxIncludedPrice := price * (1 + t.TaxRate)
+		result[fmt.Sprintf("%.2f", price)] = fmt.Sprintf("%.2f", taxIncludedPrice)
 	}
 
 	fmt.Println(result)
 }
 
-func (t TaxIncludedPriceJob) LoadData() {
+// must be a pointer so we update the values, not copy them
+func (t *TaxIncludedPriceJob) LoadData() {
 	file, err := os.Open("prices.txt")
 	if err != nil {
 		fmt.Println("Could not open file.")
@@ -51,4 +57,19 @@ func (t TaxIncludedPriceJob) LoadData() {
 		file.Close()
 		return
 	}
+
+	prices := make([]float64, len(lines))
+	for lineIndex, line := range lines {
+		floatPrice, err := strconv.ParseFloat(line, 64)
+		if err != nil {
+			fmt.Println("There was an error converting the prices to float.")
+			fmt.Println(err)
+			file.Close()
+			return
+		}
+
+		prices[lineIndex] = floatPrice
+	}
+
+	t.InputPrices = prices
 }
