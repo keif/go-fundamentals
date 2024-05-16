@@ -7,9 +7,9 @@ import (
 )
 
 type TaxIncludedPriceJob struct {
-	TaxRate           float64            `json:"tax_rate"`
-	InputPrices       []float64          `json:"input_prices"`
-	TaxIncludedPrices map[string]float64 `json:"tax_included_prices"`
+	TaxRate           float64           `json:"tax_rate"`
+	InputPrices       []float64         `json:"input_prices"`
+	TaxIncludedPrices map[string]string `json:"tax_included_prices"`
 }
 
 // constructor
@@ -31,7 +31,12 @@ func (t *TaxIncludedPriceJob) Process() {
 		result[fmt.Sprintf("%.2f", price)] = fmt.Sprintf("%.2f", taxIncludedPrice)
 	}
 
-	fmt.Println(result)
+	t.TaxIncludedPrices = result
+
+	err := filemanager.WriteJSON(fmt.Sprintf("result_%.0f.json", t.TaxRate*100), t)
+	if err != nil {
+		panic(err)
+	}
 }
 
 // must be a pointer so we update the values, not copy them
