@@ -9,7 +9,7 @@ import (
 type CMDManager struct {
 }
 
-func (cm *CMDManager) ReadLines() ([]string, error) {
+func (cm CMDManager) ReadLines() ([]string, error) {
 	fmt.Println("Please enter your prices, confirm every price with ENTER")
 
 	var prices []string
@@ -17,10 +17,11 @@ func (cm *CMDManager) ReadLines() ([]string, error) {
 	for {
 		var price string
 		fmt.Print("Price: ")
-		fmt.Scan(&price)
-
-		if price == "" {
-			break
+		if _, err := fmt.Scanln(&price); err != nil {
+			if err.Error() == "unexpected newline" {
+				return prices, nil
+			}
+			return prices, err
 		}
 		prices = append(prices, price)
 	}
@@ -28,7 +29,7 @@ func (cm *CMDManager) ReadLines() ([]string, error) {
 	return prices, nil
 }
 
-func (cm *CMDManager) WriteResult(data interface{}) error {
+func (cm CMDManager) WriteResult(data interface{}) error {
 	encoder := json.NewEncoder(os.Stdout)
 	encoder.SetIndent("", "  ")
 	fmt.Println(encoder.Encode(data))

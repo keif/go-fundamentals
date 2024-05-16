@@ -15,5 +15,8 @@ func main() {
 		cdm := cmdmanager.New()
 		priceJob := prices.NewTaxIncludedPriceJob(fm, taxRate)
 		priceJob.Process()
+
+		priceJobcdm := prices.NewTaxIncludedPriceJob(cdm, taxRate)
+		priceJobcdm.Process()
 	}
 }
