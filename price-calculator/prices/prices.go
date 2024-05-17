@@ -24,9 +24,12 @@ func NewTaxIncludedPriceJob(iom iomanager.IOManager, taxRate float64) *TaxInclud
 }
 
 // error return type removed as it's a go routine
-func (t *TaxIncludedPriceJob) Process(doneChan chan bool) {
+func (t *TaxIncludedPriceJob) Process(doneChan chan bool, errorChan chan error) {
 	err := t.LoadData()
 	if err != nil {
+		errorChan <- err
+		return
+		// go routines won't work with error returns
 		//return err
 	}
 
