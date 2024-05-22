@@ -27,6 +27,19 @@ func (e *Event) BeforeDelete() {}
 func (e *Event) BeforeInsert() {}
 func (e *Event) BeforeUpdate() {}
 
+func (e Event) Delete() error {
+	query := "DELETE FROM events WHERE id=?"
+	stmt, err := db.DB.Prepare(query)
+	if err != nil {
+		return err
+	}
+
+	defer stmt.Close()
+
+	_, err = stmt.Exec(e.ID)
+	return err
+}
+
 func GetAllEvents() ([]Event, error) {
 	query := "SELECT * FROM events"
 	rows, err := db.DB.Query(query) // it's a select, no need to exec
@@ -86,5 +99,23 @@ func (e *Event) Save() error {
 	}
 	id, err := result.LastInsertId()
 	e.ID = id
+	return err
+}
+
+func (e Event) Update() error {
+	query := `
+	UPDATE events
+	SET name=?, description=?, location=?, dateTime=?, user_id=?
+    WHERE id=?
+	`
+	stmt, err := db.DB.Prepare(query)
+
+	if err != nil {
+		return err
+	}
+
+	defer stmt.Close()
+
+	_, err = stmt.Exec(e.Name, e.Description, e.Location, e.DateTime, e.UserID, e.ID)
 	return err
 }
