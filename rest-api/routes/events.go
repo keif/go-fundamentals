@@ -37,15 +37,16 @@ func deleteEvent(context *gin.Context) {
 		return
 	}
 
-	_, err = models.GetEventById(eventId)
+	userId := context.GetInt64("userId")
+	event, err := models.GetEventById(eventId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Could not fetch event. Try again later."})
 		return
 	}
 
-	event, err := models.GetEventById(eventId)
-	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"error": "Could not fetch event. Try again later."})
+	if event.UserID != userId {
+		context.JSON(http.StatusUnauthorized, gin.H{"error": "You do not have permission to delete the event."})
+		return
 	}
 
 	err = event.Delete()
@@ -100,9 +101,15 @@ func updateEvent(context *gin.Context) {
 		return
 	}
 
-	_, err = models.GetEventById(eventId)
+	userId := context.GetInt64("userId")
+	event, err := models.GetEventById(eventId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Could not fetch event. Try again later."})
+		return
+	}
+
+	if event.UserID != userId {
+		context.JSON(http.StatusUnauthorized, gin.H{"error": "You do not have permission to update the event."})
 		return
 	}
 
