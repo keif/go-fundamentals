@@ -17,17 +17,22 @@ type Event struct {
 
 var events = []Event{}
 
-func (e *Event) AfterDelete() {}
-func (e *Event) AfterFind()   {}
-func (e *Event) AfterInsert() {}
-func (e *Event) AfterQuery()  {}
-func (e *Event) AfterUpdate() {}
+func (e *Event) CancelRegistration(userId int64) error {
+	var err error
+	query := "DELETE FROM registrations WHERE event_id = ? AND user_id = ?"
+	stmt, err := db.DB.Prepare(query)
+	if err != nil {
+		return err
+	}
 
-func (e *Event) BeforeDelete() {}
-func (e *Event) BeforeInsert() {}
-func (e *Event) BeforeUpdate() {}
+	defer stmt.Close()
 
-func (e Event) Delete() error {
+	_, err = stmt.Exec(e.ID, userId)
+
+	return err
+}
+
+func (e *Event) Delete() error {
 	query := "DELETE FROM events WHERE id=?"
 	stmt, err := db.DB.Prepare(query)
 	if err != nil {
@@ -38,44 +43,6 @@ func (e Event) Delete() error {
 
 	_, err = stmt.Exec(e.ID)
 	return err
-}
-
-func GetAllEvents() ([]Event, error) {
-	query := "SELECT * FROM events"
-	rows, err := db.DB.Query(query) // it's a select, no need to exec
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	var events []Event
-	for rows.Next() {
-		var event Event
-		err := rows.Scan(&event.ID, &event.Name, &event.Description, &event.Location, &event.DateTime, &event.UserID)
-		if err != nil {
-			return nil, err
-		}
-
-		events = append(events, event)
-	}
-
-	return events, nil
-}
-
-func GetEventById(id int64) (*Event, error) {
-	if id <= 0 {
-		return nil, errors.New("Invalid id")
-	}
-	query := "SELECT * FROM events WHERE id=?"
-	row := db.DB.QueryRow(query, id)
-
-	var event Event
-	err := row.Scan(&event.ID, &event.Name, &event.Description, &event.Location, &event.DateTime, &event.UserID)
-	if err != nil {
-		return nil, err
-	}
-
-	return &event, nil
 }
 
 func (e *Event) Register(userId int64) error {
@@ -130,4 +97,42 @@ func (e Event) Update() error {
 
 	_, err = stmt.Exec(e.Name, e.Description, e.Location, e.DateTime, e.UserID, e.ID)
 	return err
+}
+
+func GetAllEvents() ([]Event, error) {
+	query := "SELECT * FROM events"
+	rows, err := db.DB.Query(query) // it's a select, no need to exec
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var events []Event
+	for rows.Next() {
+		var event Event
+		err := rows.Scan(&event.ID, &event.Name, &event.Description, &event.Location, &event.DateTime, &event.UserID)
+		if err != nil {
+			return nil, err
+		}
+
+		events = append(events, event)
+	}
+
+	return events, nil
+}
+
+func GetEventById(id int64) (*Event, error) {
+	if id <= 0 {
+		return nil, errors.New("Invalid id")
+	}
+	query := "SELECT * FROM events WHERE id=?"
+	row := db.DB.QueryRow(query, id)
+
+	var event Event
+	err := row.Scan(&event.ID, &event.Name, &event.Description, &event.Location, &event.DateTime, &event.UserID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &event, nil
 }
