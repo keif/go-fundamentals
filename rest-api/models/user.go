@@ -1,8 +1,11 @@
 package models
 
 import (
+	"database/sql"
+	"errors"
 	"example.com/rest-api/db"
 	"example.com/rest-api/utils"
+	"fmt"
 )
 
 type User struct {
@@ -38,14 +41,26 @@ func (u User) Save() error {
 }
 
 func (u User) ValidateUser() error {
-	var err error
-	query := "SELECT * FROM users WHERE email = ?"
+	query := "SELECT id, password FROM users WHERE email = ?"
 	row := db.DB.QueryRow(query, u.Email)
 
 	var retrievedPassword string
-	err = row.Scan(&retrievedPassword)
+	err := row.Scan(&u.ID, &retrievedPassword)
 	if err != nil {
-		return err
+		fmt.Println(err)
+		if err == sql.ErrNoRows {
+			return errors.New("Credentials invalid1.")
+		}
+		return errors.New("Database error.")
 	}
 
+	passwordIsValid := utils.CheckPasswordHash(u.Password, retrievedPassword)
+	if !passwordIsValid {
+		if err == sql.ErrNoRows {
+			return errors.New("Credentials invalid2.")
+		}
+		return errors.New("Database error.")
+	}
+
+	return nil
 }

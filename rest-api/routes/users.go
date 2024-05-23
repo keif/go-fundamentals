@@ -15,21 +15,28 @@ func login(c *gin.Context) {
 		return
 	}
 
+	err = user.ValidateUser()
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Login successful!"})
 }
 
-func signup(context *gin.Context) {
+func signup(c *gin.Context) {
 	var user models.User
 	var err error
-	if err := context.ShouldBindJSON(&user); err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"error": "Could not parse request data."})
+	if err := c.ShouldBindJSON(&user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Could not parse request data."})
 		return
 	}
 
 	err = user.Save()
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"error": "Could not save user."})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not save user."})
 		return
 	}
 
-	context.JSON(http.StatusCreated, gin.H{"message": "User created!", "user": user})
+	c.JSON(http.StatusCreated, gin.H{"message": "User created!", "user": user})
 }
