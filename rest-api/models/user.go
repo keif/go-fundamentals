@@ -9,7 +9,7 @@ import (
 )
 
 type User struct {
-	ID       uint   `gorm:"primary_key;auto_increment" json:"id"`
+	ID       int64  `gorm:"primary_key;auto_increment" json:"id"`
 	Email    string `gorm:"size:255;unique" json:"email" binding:"required"`
 	Password string `gorm:"size:255" json:"password" binding:"required"`
 }
@@ -36,7 +36,7 @@ func (u User) Save() error {
 
 	userId, err := result.LastInsertId()
 
-	u.ID = uint(userId)
+	u.ID = userId
 	return err
 }
 
@@ -49,7 +49,7 @@ func (u User) ValidateUser() error {
 	if err != nil {
 		fmt.Println(err)
 		if err == sql.ErrNoRows {
-			return errors.New("Credentials invalid1.")
+			return errors.New("Credentials invalid.")
 		}
 		return errors.New("Database error.")
 	}
@@ -57,7 +57,7 @@ func (u User) ValidateUser() error {
 	passwordIsValid := utils.CheckPasswordHash(u.Password, retrievedPassword)
 	if !passwordIsValid {
 		if err == sql.ErrNoRows {
-			return errors.New("Credentials invalid2.")
+			return errors.New("Credentials invalid.")
 		}
 		return errors.New("Database error.")
 	}
